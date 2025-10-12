@@ -1272,6 +1272,4 @@ const icons = [
   'zero',
 ]
 
-// module.exports = icons
-
 export default icons

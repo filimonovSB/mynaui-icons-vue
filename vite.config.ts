@@ -2,36 +2,32 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'node:path'
 
-console.log(__dirname)
-
 export default defineConfig({
   plugins: [vue()],
   build: {
     lib: {
-      entry: resolve('src/index.ts'),
-      name: 'VueMynauiIcons',
-      // fileName: (format) => `index.${format}.js`
-      fileName: 'vue-mynaui-icons'
+      entry: resolve(__dirname, 'src/index.ts'),
     },
     rollupOptions: {
       external: ['vue'],
-      output: {
-        globals: {
-          vue: 'Vue'
+      output: [
+        {
+          format: 'es',
+          entryFileNames: '[name].js',
+          preserveModules: true,
+          preserveModulesRoot: 'src',
+          dir: 'dist/es',
+          exports: 'named',
+        },
+        {
+          format: 'cjs',
+          entryFileNames: '[name].cjs',
+          preserveModules: true,
+          preserveModulesRoot: 'src',
+          dir: 'dist/cjs',
+          exports: 'named',
         }
-      }
+      ]
     }
   },
-  // resolve: {
-  //   alias: {
-  //     '@mynaui/icons': require.resolve('@mynaui/icons')
-  //   }
-  // },
-  // css: {
-  //   preprocessorOptions: {
-  //     scss: {
-  //       additionalData: `@use "@mynaui/icons/mynaui";`
-  //     }
-  //   }
-  // },
 })

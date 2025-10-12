@@ -1,7 +1,7 @@
 {
-  "name": "vue-mynaui-icons",
-  "version": "0.1.0",
-    "type": "module",
+  "name": "mynaui-icons-vue",
+  "version": "0.2.0",
+  "type": "module",
   "description": "MynaUI Icons for Vue.js",
   "keywords": [
     "icons",
@@ -15,28 +15,25 @@
     "icons-vue",
     "mynaui-icon"
   ],
-  "main": "./dist/vue-mynaui-icons.umd.js",
-  "module": "./dist/vue-mynaui-icons.js",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/es/index.js",
+  "types": "./dist/types/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
-    "exports": {
-        ".": {
-            "import": "./dist/vue-mynaui-icons.js",
-            "require": "./dist/vue-mynaui-icons.umd.js"
-        },
-        "./icons": {
-            "import": "./dist/vue-mynaui-icons.js",
-            "require": "./dist/vue-mynaui-icons.umd.js"
-        }
-    },
-    "types": "./dist/index.d.ts",
-    "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/es/index.js",
+      "require": "./dist/cjs/index.cjs"
+    }
+  },
+  "sideEffects": false,
   "scripts": {
     "build:icons": "node scripts/generate-components.js",
-    "build:types": "vue-tsc --declaration --emitDeclarationOnly",
-    "build": "npm run build:icons && vite build && vue-tsc --emitDeclarationOnly"
+    "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build": "npm run clean && npm run build:icons && vite build && npm run build:types",
+    "clean": "rm -rf ./dist && find . ! -name '.gitignore' -path './src/components/*' -exec rm -rf {} + "
   },
   "repository": {
     "type": "git",
@@ -61,7 +58,6 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "empty-lite": "^2.0.0",
     "fs-extra": "^11.3.2",
-    "sass-embedded": "^1.93.2",
     "typescript": "^5.9.3",
     "vite": "^7.1.9",
     "vue": "^3.5.22",

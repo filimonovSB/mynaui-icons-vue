@@ -2,65 +2,61 @@ import fs from 'fs-extra'
 import path from 'node:path'
 import empty from 'empty-lite'
 import { fileURLToPath } from 'node:url'
-// const fs = require('fs-extra');
-// const path = require('node:path');
-// const empty = require('empty-lite');
 
 function getDirname(importMetaUrl) {
     return path.dirname(fileURLToPath(importMetaUrl));
 }
 
-// const icons = require('./icons')
 import icons from './icons.js'
-
-// console.log(getDirname(import.meta.url))
-
-// process.exit(1)
 const __dirname = getDirname(import.meta.url)
 const iconsMeta = fs.readJsonSync(path.join(__dirname, './meta.json'))
-// console.log(icons)
 
-const baseComponentTemplate = (iconPath) => `
-<script setup lang="ts">
-    import { computed, defineAsyncComponent } from 'vue'
-    const IconSvg = defineAsyncComponent(() => import('../../IconSvg.vue'))
+// base icon component template
+const baseComponentTemplate = (iconPath, iconName) => `
+import { defineComponent, h } from 'vue'
+import type { IconProps } from '../../types'
 
-    interface Props {
-      size?: number | string
-      color?: string
-    }
+export const ${iconName} = defineComponent({
+  name: '${iconName}',
+  props: {
+      size: {
+        type: [Number, String],
+        default: 24
+      },
+      color: {
+        type: String,
+        default: 'currentColor'
+      },
+      stroke: {
+        type: String,
+        default: '1.5'
+      }
+    },
+  setup(props: IconProps) {
+    return () =>
+        h('svg', {
+            width: props.size,
+            height: props.size,
+            stroke: props.color,
+            'stroke-width': props.stroke,
+            viewBox: '0 0 24 24',
+            fill: "none",
+            'stroke-linecap': "round",
+            'stroke-linejoin': "round",
+            xmlns: 'http://www.w3.org/2000/svg',
+            innerHTML: "${iconPath}"
+        })
+  }
+})
 
-    const props = withDefaults(defineProps<Props>(), {
-      size: 12,
-      color: undefined
-    })
-</script>
-<template>
-    <IconSvg :size="size" :color="color">
-        ${iconPath}
-    </IconSvg>
-</template>
+export default ${iconName}
 `
-
-// const baseComponentTemplate = (iconPath) => `
-//     import { computed, defineAsyncComponent } from 'vue'
-//     const IconSvg = defineAsyncComponent(() => import('../../IconSvg.vue'))
-//
-//     export const AArrowDown = defineComponent({
-//       name: 'AArrowDown',
-//       setup() {
-//         return () => (
-//           <IconSvg :size="size" :color="color">${iconPath}</IconSvg>
-//         );
-//       }
-//     });
-// `
 
 let iconComponents = []
 const iconsDir = path.join(__dirname, '../src/components/icons')
 fs.ensureDirSync(iconsDir)
 
-// Генерируем файлы компонентов
+// generate components files файлы компонентов
 icons.forEach(iconName => {
 
     if (empty(iconsMeta[iconName])) {
@@ -73,33 +69,24 @@ icons.forEach(iconName => {
 
     if (iconsMeta[iconName]?.regular) {
         fs.writeFileSync(
-            path.join(iconsDir, `${componentName}.vue`),
-            baseComponentTemplate(iconsMeta[iconName]?.regular)
+            path.join(iconsDir, `${componentName}.ts`),
+            baseComponentTemplate(iconsMeta[iconName]?.regular, `Icon${componentName}`)
         )
         iconComponents.push(`${componentName}`)
     }
 
     if (iconsMeta[iconName]?.solid) {
         fs.writeFileSync(
-            path.join(iconsDir, `${componentName}Solid.vue`),
-            baseComponentTemplate(iconsMeta[iconName]?.solid)
+            path.join(iconsDir, `${componentName}Solid.ts`),
+            baseComponentTemplate(iconsMeta[iconName]?.solid, `Icon${componentName}Solid`)
         )
         iconComponents.push(`${componentName}Solid`)
     }
-
-    // const fileName = `${componentName}.vue`;
-    // const filePath = path.join(iconsDir, fileName);
-    //
-    // fs.writeFileSync(filePath, baseComponentTemplate(iconName));
 })
 
-// Генерируем индексный файл для иконок
+// generate index file for icons
 const indexContent = iconComponents.map(iconName => {
-    // const componentName = iconName.split('-')
-    //     .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    //     .join('');
-
-    return `export { default as ${iconName} } from './icons/${iconName}.vue'`
+    return `export { Icon${iconName} } from './icons/${iconName}'`
 }).join('\n')
 
 fs.writeFileSync(path.join(__dirname, '../src/components', 'index.ts'), indexContent)

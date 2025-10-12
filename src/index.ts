@@ -1,22 +1,9 @@
-// import { App } from 'vue'
-// import IconSvg from './IconSvg.vue'
-// import IconFont from './IconFont.vue'
-// import {icons} from './icons'
+export type { IconProps } from './types';
 
-import * as components from './components'
-
-// Реэкспорт всех иконок
+// re-export icons
 export * from './components'
 
-const VueMynauiIcons = {
-  install(app) {
-    for (const componentKey in components) {
-      app.component(componentKey, components[componentKey])
-    }
-  }
-}
-
-export default VueMynauiIcons
+// export default VueMynauiIcons
 
 // export { IconSvg }
 

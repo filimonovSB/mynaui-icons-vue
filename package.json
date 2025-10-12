@@ -1,0 +1,70 @@
+{
+  "name": "vue-mynaui-icons",
+  "version": "0.1.0",
+    "type": "module",
+  "description": "MynaUI Icons for Vue.js",
+  "keywords": [
+    "icons",
+    "svg",
+    "vue",
+    "mynaui",
+    "vue-icons",
+    "icon-library",
+    "icon-pack",
+    "icon-set",
+    "icons-vue",
+    "mynaui-icon"
+  ],
+  "main": "./dist/vue-mynaui-icons.umd.js",
+  "module": "./dist/vue-mynaui-icons.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+    "exports": {
+        ".": {
+            "import": "./dist/vue-mynaui-icons.js",
+            "require": "./dist/vue-mynaui-icons.umd.js"
+        },
+        "./icons": {
+            "import": "./dist/vue-mynaui-icons.js",
+            "require": "./dist/vue-mynaui-icons.umd.js"
+        }
+    },
+    "types": "./dist/index.d.ts",
+    "sideEffects": false,
+  "scripts": {
+    "build:icons": "node scripts/generate-components.js",
+    "build:types": "vue-tsc --declaration --emitDeclarationOnly",
+    "build": "npm run build:icons && vite build && vue-tsc --emitDeclarationOnly"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darkfriend/vue-mynaui-icons.git"
+  },
+  "author": {
+    "name": "darkfriend",
+    "url": "https://darkfriend.ru"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/darkfriend/vue-mynaui-icons/issues"
+  },
+  "homepage": "https://github.com/darkfriend/vue-mynaui-icons#readme",
+  "dependencies": {
+    "@mynaui/icons": "^0.3.9"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "empty-lite": "^2.0.0",
+    "fs-extra": "^11.3.2",
+    "sass-embedded": "^1.93.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9",
+    "vue": "^3.5.22",
+    "vue-tsc": "^3.1.1"
+  }
+}

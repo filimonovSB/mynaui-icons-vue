@@ -12,7 +12,7 @@ const __dirname = getDirname(import.meta.url)
 const iconsMeta = fs.readJsonSync(path.join(__dirname, './meta.json'))
 
 // base icon component template
-const baseComponentTemplate = (iconPath, iconName) => `
+const baseComponentTemplate = (iconPath, iconName, defaultFill = 'none' ) => `
 import { defineComponent, h } from 'vue'
 import type { IconProps } from '../../types'
 
@@ -30,6 +30,10 @@ export const ${iconName} = defineComponent({
       stroke: {
         type: String,
         default: '1.5'
+      },
+      fill: {
+        type: String,
+        default: '${defaultFill}'
       }
     },
   setup(props: IconProps) {
@@ -40,7 +44,7 @@ export const ${iconName} = defineComponent({
             stroke: props.color,
             'stroke-width': props.stroke,
             viewBox: '0 0 24 24',
-            fill: "none",
+            fill: props.fill,
             'stroke-linecap': "round",
             'stroke-linejoin': "round",
             xmlns: 'http://www.w3.org/2000/svg',
@@ -70,7 +74,7 @@ icons.forEach(iconName => {
     if (iconsMeta[iconName]?.regular) {
         fs.writeFileSync(
             path.join(iconsDir, `${componentName}.ts`),
-            baseComponentTemplate(iconsMeta[iconName]?.regular, `Icon${componentName}`)
+            baseComponentTemplate(iconsMeta[iconName]?.regular, `Icon${componentName}`, 'none')
         )
         iconComponents.push(`${componentName}`)
     }
@@ -78,7 +82,7 @@ icons.forEach(iconName => {
     if (iconsMeta[iconName]?.solid) {
         fs.writeFileSync(
             path.join(iconsDir, `${componentName}Solid.ts`),
-            baseComponentTemplate(iconsMeta[iconName]?.solid, `Icon${componentName}Solid`)
+            baseComponentTemplate(iconsMeta[iconName]?.solid, `Icon${componentName}Solid`, 'currentColor')
         )
         iconComponents.push(`${componentName}Solid`)
     }
